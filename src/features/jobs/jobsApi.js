@@ -19,8 +19,6 @@ export const editJobs = async (id, data) => {
 };
 
 export const deleteJobs = async (id) => {
-  const response = await api.put(`/jobs/${id}`);
-
-  console.log("response:", response);
-  return response.data;
+  const response = await api.delete(`/jobs/${id}`);
+  return response.statusText;
 };

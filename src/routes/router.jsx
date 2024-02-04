@@ -1,7 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "../layout/Main";
-import AddJob from "../pages/AddJob";
-import EditJob from "../pages/EditJob";
+import FormPage from "../pages/FormPage";
 import Home from "../pages/Home";
 
 const router = createBrowserRouter([
@@ -14,12 +13,8 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/edit-job",
-        element: <EditJob />,
-      },
-      {
-        path: "/add-job",
-        element: <AddJob />,
+        path: "/job-form",
+        element: <FormPage />,
       },
     ],
   },

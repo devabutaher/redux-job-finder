@@ -16,19 +16,19 @@ const Sidebar = () => {
             </Link>
             <ul className="space-y-6 lg:space-y-2 ">
               <li>
-                <button className="sub-menu space-x-1" id="lws-internship-menu">
+                <button className="space-x-1 sub-menu" id="lws-internship-menu">
                   <i className="fa-solid fa-stop !text-[#FF5757]"></i>
                   <span>Internship</span>
                 </button>
               </li>
               <li>
-                <button className="sub-menu space-x-1" id="lws-fulltime-menu">
+                <button className="space-x-1 sub-menu" id="lws-fulltime-menu">
                   <i className="fa-solid fa-stop !text-[#FF8A00]"></i>
                   <span>Full Time</span>
                 </button>
               </li>
               <li>
-                <button className="sub-menu space-x-1" id="lws-remote-menu">
+                <button className="space-x-1 sub-menu" id="lws-remote-menu">
                   <i className="fa-solid fa-stop !text-[#56E5C4]"></i>
                   <span>Remote</span>
                 </button>
@@ -37,8 +37,8 @@ const Sidebar = () => {
           </li>
           <li>
             <Link
-              to="/add-job"
-              className="main-menu space-x-1"
+              to="/job-form"
+              className="space-x-1 main-menu"
               id="lws-addJob-menu"
             >
               <i className="fa-solid fa-file-circle-plus"></i>

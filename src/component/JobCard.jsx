@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { editActive } from "../features/jobs/jobsSlice";
+import { deleteJob, editActive } from "../features/jobs/jobsSlice";
 
 const JobCard = ({ job }) => {
   const dispatch = useDispatch();
@@ -9,7 +9,11 @@ const JobCard = ({ job }) => {
 
   const handleEdit = () => {
     dispatch(editActive(job));
-    navigate("/edit-job");
+    navigate("/job-form");
+  };
+
+  const handleRemove = () => {
+    dispatch(deleteJob(job.id));
   };
 
   return (
@@ -53,7 +57,11 @@ const JobCard = ({ job }) => {
         </span>
 
         <span className="sm:ml-3">
-          <button type="button" className="lws-delete btn btn-danger ">
+          <button
+            type="button"
+            className="lws-delete btn btn-danger"
+            onClick={handleRemove}
+          >
             <i className="mr-2 -ml-1 text-gray-300 fa-solid fa-trash"></i>
             Delete
           </button>

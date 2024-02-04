@@ -29,8 +29,8 @@ export const editJob = createAsyncThunk(
 );
 
 export const deleteJob = createAsyncThunk("jobs/deleteJobs", async (id) => {
-  const jobs = await deleteJobs(id);
-  return jobs;
+  const response = await deleteJobs(id);
+  return response;
 });
 
 const jobsSlice = createSlice({
@@ -40,10 +40,18 @@ const jobsSlice = createSlice({
     editActive: (state, action) => {
       state.editing = action.payload;
     },
+    filterSalary: (state, action) => {
+      if (action.payload === "lowToHigh") {
+        state.jobs = state.jobs.sort((a, b) => a.salary - b.salary);
+      } else if (action.payload === "highToLow") {
+        state.jobs = state.jobs.sort((a, b) => b.salary - a.salary);
+      } else {
+        state.jobs = state.jobs.sort((a, b) => a.id - b.id);
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
-      // fetch jobs
       .addCase(fetchJobs.pending, (state) => {
         state.isLoading = true;
       })
@@ -66,7 +74,18 @@ const jobsSlice = createSlice({
       })
       .addCase(createJob.rejected, (state, action) => {
         state.isLoading = false;
-        state.jobs = [];
+        state.isError = true;
+        state.error = action.error?.message;
+      })
+      .addCase(deleteJob.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteJob.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.jobs = state.jobs.filter((job) => job.id !== action.meta.arg);
+      })
+      .addCase(deleteJob.rejected, (state, action) => {
+        state.isLoading = false;
         state.isError = true;
         state.error = action.error?.message;
       });
@@ -74,4 +93,4 @@ const jobsSlice = createSlice({
 });
 
 export default jobsSlice.reducer;
-export const { editActive } = jobsSlice.actions;
+export const { editActive, filterSalary } = jobsSlice.actions;
