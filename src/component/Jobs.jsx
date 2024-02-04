@@ -1,13 +1,41 @@
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchJobs } from "../features/jobs/jobsSlice";
+import JobCard from "./JobCard";
 
 const Jobs = () => {
+  const { jobs, isLoading, isError, error } = useSelector(
+    (state) => state.jobs
+  );
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchJobs());
+  }, [dispatch]);
+
+  // decide what to render
+  let content = null;
+
+  if (isLoading) content = <p>Loading...</p>;
+
+  if (!isLoading && isError) content = <p className="error">{error}</p>;
+
+  if (!isLoading && !isError && jobs?.length > 0) {
+    content = jobs.map((job) => <JobCard key={job.id} job={job} />);
+  }
+
+  if (!isLoading && !isError && jobs?.length === 0) {
+    content = <p>No jobs found!</p>;
+  }
+
   return (
     <div className="lg:pl-[14rem]  mt-[5.8125rem]">
       <main className="max-w-3xl rounded-lg  mx-auto relative z-20 p-10 xl:max-w-none bg-[#1E293B]">
-        <div className="md:flex space-y-2 md:space-y-0 justify-between mb-10 ">
+        <div className="justify-between mb-10 space-y-2 md:flex md:space-y-0 ">
           <h1 className="lws-section-title">All Available Jobs</h1>
           <div className="flex gap-4">
-            <div className="search-field group flex-1">
+            <div className="flex-1 search-field group">
               <i className="fa-solid fa-magnifying-glass search-icon group-focus-within:text-blue-500"></i>
               <input
                 type="text"
@@ -29,49 +57,7 @@ const Jobs = () => {
           </div>
         </div>
 
-        <div className="jobs-list">
-          {/* <!-- Single Job --> */}
-          <div className="lws-single-job">
-            <div className="flex-1 min-w-0">
-              <h2 className="lws-title">Back End Developer</h2>
-              <div className="job-footers">
-                <div className="lws-type">
-                  {/* <!-- Fulltime - #FF8A00,  --><!-- Internship - #FF5757,  --><!-- Remote - #56E5C4,  --> */}
-                  <i className="fa-solid fa-stop !text-[#FF8A00] text-lg mr-1.5"></i>
-                  Full-time
-                </div>
-                <div className="lws-salary">
-                  <i className="fa-solid fa-bangladeshi-taka-sign text-slate-400 text-lg mr-1.5"></i>
-                  BDT 40,000
-                </div>
-                <div className="lws-deadline">
-                  <i className="fa-regular fa-calendar text-slate-400 text-lg mr-1.5"></i>
-                  Closing on 2022-12-31
-                </div>
-              </div>
-            </div>
-            <div className="mt-5 flex lg:mt-0 lg:ml-4">
-              <span className="hidden sm:block">
-                <Link
-                  to={"/edit-job"}
-                  type="button"
-                  className="lws-edit btn btn-primary"
-                >
-                  <i className="fa-solid fa-pen text-gray-300 -ml-1 mr-2"></i>
-                  Edit
-                </Link>
-              </span>
-
-              <span className="sm:ml-3">
-                <button type="button" className="lws-delete btn btn-danger ">
-                  <i className="fa-solid fa-trash text-gray-300 -ml-1 mr-2"></i>
-                  Delete
-                </button>
-              </span>
-            </div>
-          </div>
-          {/* <!-- Single Job --> */}
-        </div>
+        <div className="jobs-list">{content}</div>
       </main>
     </div>
   );
