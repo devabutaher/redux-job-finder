@@ -1,6 +1,37 @@
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { createJob } from "../features/jobs/jobsSlice";
+
 const JobForm = () => {
+  const [data, setData] = useState({
+    title: "",
+    salary: "",
+    type: "",
+    deadline: "",
+  });
+
+  const dispatch = useDispatch();
+  const { editing, jobs } = useSelector((state) => state.jobs);
+
+  const handleCreate = (e) => {
+    e.preventDefault();
+
+    const { lwsJobType, lwsJobTitle, lwsJobDeadline, lwsJobSalary } = e.target;
+
+    const newData = {
+      title: lwsJobTitle.value,
+      salary: lwsJobSalary.value,
+      type: lwsJobType.value,
+      deadline: lwsJobDeadline.value,
+    };
+
+    setData(newData);
+
+    dispatch(createJob(newData));
+  };
+
   return (
-    <form className="space-y-6">
+    <form onSubmit={handleCreate} className="space-y-6">
       <div className="fieldContainer">
         <label
           htmlFor="lws-JobTitle"
@@ -8,8 +39,8 @@ const JobForm = () => {
         >
           Job Title
         </label>
-        <select id="lws-JobTitle" name="lwsJobTitle" required>
-          <option value="" hidden selected>
+        <select id="lws-JobTitle" name="lwsJobTitle" required defaultValue="">
+          <option value="" disabled hidden>
             Select Job
           </option>
           <option>Software Engineer</option>
@@ -31,8 +62,8 @@ const JobForm = () => {
 
       <div className="fieldContainer">
         <label htmlFor="lws-JobType">Job Type</label>
-        <select id="lws-JobType" name="lwsJobType" required>
-          <option value="" hidden selected>
+        <select id="lws-JobType" name="lwsJobType" required defaultValue="">
+          <option value="" disabled hidden>
             Select Job Type
           </option>
           <option>Full Time</option>
@@ -72,7 +103,7 @@ const JobForm = () => {
           id="lws-submit"
           className="cursor-pointer btn btn-primary w-fit"
         >
-          Edit
+          Add New Job
         </button>
       </div>
     </form>

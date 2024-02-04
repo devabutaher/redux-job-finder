@@ -16,8 +16,8 @@ export const fetchJobs = createAsyncThunk("jobs/fetchJobs", async () => {
   return jobs;
 });
 
-export const createJob = createAsyncThunk("jobs/createJobs", async () => {
-  const jobs = await createJobs();
+export const createJob = createAsyncThunk("jobs/createJob", async (data) => {
+  const jobs = await createJobs(data);
   return jobs;
 });
 
@@ -45,6 +45,7 @@ const jobsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // fetch jobs
       .addCase(fetchJobs.pending, (state) => {
         state.isLoading = true;
       })
@@ -53,6 +54,19 @@ const jobsSlice = createSlice({
         state.jobs = action.payload;
       })
       .addCase(fetchJobs.rejected, (state, action) => {
+        state.isLoading = false;
+        state.jobs = [];
+        state.isError = true;
+        state.error = action.error?.message;
+      })
+      .addCase(createJob.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(createJob.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.jobs.push(action.payload);
+      })
+      .addCase(createJob.rejected, (state, action) => {
         state.isLoading = false;
         state.jobs = [];
         state.isError = true;

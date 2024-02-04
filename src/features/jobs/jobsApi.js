@@ -6,8 +6,8 @@ export const getAllJobs = async () => {
   return response.data;
 };
 
-export const createJobs = async () => {
-  const response = await api.create("/jobs");
+export const createJobs = async (data) => {
+  const response = await api.post("/jobs", data);
 
   return response.data;
 };
