@@ -13,13 +13,14 @@ export const createJobs = async (data) => {
 };
 
 export const editJobs = async (id, data) => {
-  const response = await api.put(`/jobs${id}`, data);
+  const response = await api.put(`/jobs/${id}`, data);
 
   return response.data;
 };
 
 export const deleteJobs = async (id) => {
-  const response = await api.put(`/jobs${id}`);
+  const response = await api.put(`/jobs/${id}`);
 
+  console.log("response:", response);
   return response.data;
 };

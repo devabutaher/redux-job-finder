@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { createJob } from "../features/jobs/jobsSlice";
+import { useNavigate } from "react-router-dom";
+import { createJob, editJob } from "../features/jobs/jobsSlice";
 
 const JobForm = () => {
   const [data, setData] = useState({
@@ -11,27 +12,45 @@ const JobForm = () => {
   });
 
   const dispatch = useDispatch();
-  const { editing, jobs } = useSelector((state) => state.jobs);
+  const { editing } = useSelector((state) => state.jobs) || {};
+  const [isEditMode, setIsEditMode] = useState(false);
+  const navigate = useNavigate();
+
+  const reset = () => {
+    setData({ title: "", salary: "", type: "", deadline: "" });
+  };
 
   const handleCreate = (e) => {
     e.preventDefault();
+    dispatch(createJob(data));
+    reset();
+  };
 
-    const { lwsJobType, lwsJobTitle, lwsJobDeadline, lwsJobSalary } = e.target;
+  useEffect(() => {
+    const data = editing || {};
 
-    const newData = {
-      title: lwsJobTitle.value,
-      salary: lwsJobSalary.value,
-      type: lwsJobType.value,
-      deadline: lwsJobDeadline.value,
-    };
+    if (data.id) {
+      setIsEditMode(true);
+      setData(data);
+    } else {
+      setIsEditMode(false);
+      navigate("/");
+      reset();
+    }
+  }, [editing, navigate]);
 
-    setData(newData);
-
-    dispatch(createJob(newData));
+  const handleEdit = (e) => {
+    e.preventDefault();
+    dispatch(editJob({ id: editing?.id, data }));
+    navigate("/");
+    reset();
   };
 
   return (
-    <form onSubmit={handleCreate} className="space-y-6">
+    <form
+      onSubmit={isEditMode ? handleEdit : handleCreate}
+      className="space-y-6"
+    >
       <div className="fieldContainer">
         <label
           htmlFor="lws-JobTitle"
@@ -39,9 +58,15 @@ const JobForm = () => {
         >
           Job Title
         </label>
-        <select id="lws-JobTitle" name="lwsJobTitle" required defaultValue="">
-          <option value="" disabled hidden>
-            Select Job
+        <select
+          id="lws-JobTitle"
+          name="lwsJobTitle"
+          required
+          onChange={(e) => setData({ ...data, title: e.target.value })}
+          value={data.title}
+        >
+          <option value="" hidden>
+            Select Job Title
           </option>
           <option>Software Engineer</option>
           <option>Software Developer</option>
@@ -62,8 +87,14 @@ const JobForm = () => {
 
       <div className="fieldContainer">
         <label htmlFor="lws-JobType">Job Type</label>
-        <select id="lws-JobType" name="lwsJobType" required defaultValue="">
-          <option value="" disabled hidden>
+        <select
+          id="lws-JobType"
+          name="lwsJobType"
+          required
+          onChange={(e) => setData({ ...data, type: e.target.value })}
+          value={data.type}
+        >
+          <option value="" hidden>
             Select Job Type
           </option>
           <option>Full Time</option>
@@ -83,6 +114,8 @@ const JobForm = () => {
             required
             className="!rounded-l-none !border-0"
             placeholder="20,00,000"
+            onChange={(e) => setData({ ...data, salary: e.target.value })}
+            value={data.salary}
           />
         </div>
       </div>
@@ -94,6 +127,8 @@ const JobForm = () => {
           name="lwsJobDeadline"
           id="lws-JobDeadline"
           required
+          onChange={(e) => setData({ ...data, deadline: e.target.value })}
+          value={data.deadline}
         />
       </div>
 
@@ -103,7 +138,7 @@ const JobForm = () => {
           id="lws-submit"
           className="cursor-pointer btn btn-primary w-fit"
         >
-          Add New Job
+          {isEditMode ? "Edit Job" : "Add New Job"}
         </button>
       </div>
     </form>

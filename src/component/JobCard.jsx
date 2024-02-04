@@ -1,7 +1,17 @@
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { editActive } from "../features/jobs/jobsSlice";
 
 const JobCard = ({ job }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleEdit = () => {
+    dispatch(editActive(job));
+    navigate("/edit-job");
+  };
+
   return (
     <div className="lws-single-job">
       <div className="flex-1 min-w-0">
@@ -32,14 +42,14 @@ const JobCard = ({ job }) => {
       </div>
       <div className="flex mt-5 lg:mt-0 lg:ml-4">
         <span className="hidden sm:block">
-          <Link
-            to={"/edit-job"}
+          <button
+            onClick={handleEdit}
             type="button"
             className="lws-edit btn btn-primary"
           >
             <i className="mr-2 -ml-1 text-gray-300 fa-solid fa-pen"></i>
             Edit
-          </Link>
+          </button>
         </span>
 
         <span className="sm:ml-3">
@@ -55,9 +65,10 @@ const JobCard = ({ job }) => {
 
 JobCard.propTypes = {
   job: PropTypes.shape({
+    id: PropTypes.number.isRequired,
     title: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
-    salary: PropTypes.number.isRequired,
+    salary: PropTypes.string.isRequired,
     deadline: PropTypes.string.isRequired,
   }).isRequired,
 };

@@ -10,7 +10,6 @@ const initialState = {
 };
 
 // async thunks
-
 export const fetchJobs = createAsyncThunk("jobs/fetchJobs", async () => {
   const jobs = await getAllJobs();
   return jobs;
@@ -37,11 +36,10 @@ export const deleteJob = createAsyncThunk("jobs/deleteJobs", async (id) => {
 const jobsSlice = createSlice({
   name: "jobs",
   initialState,
-  editActive: (state, action) => {
-    state.editing = action.payload;
-  },
-  editInActive: (state) => {
-    state.editing = {};
+  reducers: {
+    editActive: (state, action) => {
+      state.editing = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -76,3 +74,4 @@ const jobsSlice = createSlice({
 });
 
 export default jobsSlice.reducer;
+export const { editActive } = jobsSlice.actions;
